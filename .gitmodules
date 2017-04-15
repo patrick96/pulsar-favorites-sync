@@ -1,0 +1,3 @@
+[submodule "libs/android-backup-extractor"]
+	path = libs/android-backup-extractor
+	url = https://github.com/nelenkov/android-backup-extractor
