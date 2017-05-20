@@ -41,7 +41,7 @@ cd "$wd" || exit 1
 
 echo "Creating backup please use 1 as the password"
 # Set password to 1
-adb backup -noapk "$pkg"
+adb backup -noapk "$pkg" || exit 1
 
 echo "Encrypting and extracting backup.ab"
 # Backup application data from phone, decrypt and extract it
