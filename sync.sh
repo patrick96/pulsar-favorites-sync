@@ -7,8 +7,9 @@ function usage() {
     echo -e "Usage: $0 [options]"
     echo -e "Description: Sync favorites from pulsar with a local playlist"
     echo -e "Options:"
-    echo -e "    -h: Display this help message"
-    echo -e "    -v: Display script version"
+    echo -e "    -h                 Display this help message"
+    echo -e "    -v                 Display script version"
+    echo -e "    -e PW              Set the encryption password to PW"
 }
 
 function version() {
