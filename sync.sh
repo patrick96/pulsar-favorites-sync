@@ -3,6 +3,17 @@
 __ScriptVersion="0.0.1"
 encryption_pw="1"
 
+# Package name of the android application
+pkg="com.rhmsoft.pulsar"
+
+# Root folder for your music files on your phone
+MUSIC_FOLDER=""
+FAVORITES=""
+
+# Required argument flags
+r_flag=0
+f_flag=0
+
 function usage() {
     echo -e "Usage: $0 [options]"
     echo -e "Description: Sync favorites from pulsar with a local playlist"
@@ -10,13 +21,19 @@ function usage() {
     echo -e "    -h                 Display this help message"
     echo -e "    -v                 Display script version"
     echo -e "    -e PW              Set the encryption password to PW"
+    echo -e "    -r PATH (required) Set the absolute path to the music folder on your phone"
+    echo -e "    -f FILE (required) Location of the local playlist file to sync with"
 }
 
 function version() {
     echo "$0 -- Version $__ScriptVersion"
 }
 
-while getopts ":hve:" opt; do
+function echoerr() {
+    echo -e "\e[0;31m$*\e[0m"
+}
+
+while getopts ":hve:r:f:" opt; do
     case $opt in
         h)
             usage
@@ -29,7 +46,15 @@ while getopts ":hve:" opt; do
         e)
             encryption_pw="$OPTARG"
             ;;
-        *)
+        r)
+            r_flag=1
+            MUSIC_FOLDER="$OPTARG"
+            ;;
+        f)
+            f_flag=1
+            FAVORITES="$OPTARG"
+            ;;
+        ?)
             echo "Invalid option: -$OPTARG" >&2
             usage
             exit 1
@@ -38,11 +63,44 @@ while getopts ":hve:" opt; do
 done
 shift $((OPTIND-1))
 
-# Root folder for your music files on your phone
-MUSIC_FOLDER="%INSERT PATH HERE%"
-FAVORITES="%INSERT PATH HERE%"
+# Exit on missing required arguments
+if [ $r_flag -eq 0 ] || [ $f_flag -eq 0 ]; then
 
-pkg="com.rhmsoft.pulsar"
+    # Color all subsequent warning red
+    echo -en "\e[1;31m"
+
+    if [ $r_flag -eq 0 ]; then
+        echo "The -r argument is required"
+    fi
+
+    if [ $f_flag -eq 0 ]; then
+        echo "The -f argument is required"
+    fi
+
+    echo -en "\n\e[0m"
+
+    usage
+    exit 1
+fi
+
+if [ -z "$MUSIC_FOLDER" ] ||  ! adb shell test -d "$MUSIC_FOLDER"; then
+    echoerr "The given music folder \"$MUSIC_FOLDER\" was not found on the phone. Is your phone plugged in?"
+    exit 1
+fi
+
+if [ -z "$FAVORITES" ]; then
+    echoerr "The path to the local playlist file cannot be empty."
+    exit 1
+fi
+
+if ! [ -f "$FAVORITES" ]; then
+    echo "The local favorites playlist file \"$FAVORITES\" does not exist yet, creating..."
+    touch "$FAVORITES"
+fi
+
+echo -e "Music folder on phone:\n\t$MUSIC_FOLDER"
+echo -e "Local playlist:\n\t$(realpath "$FAVORITES")"
+
 wd="$(mktemp -d)"
 
 # The playlist exported from pulsar will be saved here
