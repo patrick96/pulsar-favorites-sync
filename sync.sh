@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 
 __ScriptVersion="0.0.1"
+encryption_pw="1"
 
 function usage() {
     echo -e "Usage: $0 [options]"
@@ -14,29 +15,27 @@ function version() {
     echo "$0 -- Version $__ScriptVersion"
 }
 
-do_exit=0
-
-while getopts ":hv" opt; do
+while getopts ":hve:" opt; do
     case $opt in
         h)
             usage
-            do_exit=1
+            exit 0;
             ;;
         v)
             version
-            do_exit=1
+            exit 0;
             ;;
-
+        e)
+            encryption_pw="$OPTARG"
+            ;;
         *)
             echo "Invalid option: -$OPTARG" >&2
             usage
             exit 1
             ;;
-    esac 
+    esac
 done
 shift $((OPTIND-1))
-
-[ $do_exit -eq 1 ] && exit 0
 
 # Root folder for your music files on your phone
 MUSIC_FOLDER="%INSERT PATH HERE%"
@@ -67,13 +66,12 @@ cp build/libs/abe-all.jar "$wd"
 
 cd "$wd" || exit 1
 
-echo "Creating backup please use 1 as the password"
-# Set password to 1
+echo "Creating backup please use \"$encryption_pw\" as the password (without the quotes)"
 adb backup -noapk "$pkg" || exit 1
 
 echo "Encrypting and extracting backup.ab"
 # Backup application data from phone, decrypt and extract it
-java -jar abe-all.jar unpack "$wd/backup.ab" "$wd/backup.tar" "1"
+java -jar abe-all.jar unpack "$wd/backup.ab" "$wd/backup.tar" "$encryption_pw"
 tar xf backup.tar
 cd "apps/$pkg/db" || exit 1
 
