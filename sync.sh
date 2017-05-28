@@ -114,6 +114,9 @@ restore="$wd/restore.sql"
 
 echo "Starting syncing process in $wd"
 
+# A symlink to the script may be executed, this way we make sure we are in the project directory
+cd "$(dirname "$(realpath "$0")")" || exit 1
+
 # Build abe {{{
 # TODO only build once and then copy to cache
 cd libs/android-backup-extractor || exit 1
