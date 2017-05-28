@@ -1,14 +1,42 @@
 #!/usr/bin/env bash
 
-usage() {
-    echo -e "Usage: ./$(basename "$0")"
+__ScriptVersion="0.0.1"
+
+function usage() {
+    echo -e "Usage: $0 [options]"
     echo -e "Description: Sync favorites from pulsar with a local playlist"
     echo -e "Options:"
-    echo -e "    --help: Display this help message"
-    exit 0
+    echo -e "    -h: Display this help message"
+    echo -e "    -v: Display script version"
 }
 
-expr "$*" : ".*--help" > /dev/null && usage
+function version() {
+    echo "$0 -- Version $__ScriptVersion"
+}
+
+do_exit=0
+
+while getopts ":hv" opt; do
+    case $opt in
+        h)
+            usage
+            do_exit=1
+            ;;
+        v)
+            version
+            do_exit=1
+            ;;
+
+        *)
+            echo "Invalid option: -$OPTARG" >&2
+            usage
+            exit 1
+            ;;
+    esac 
+done
+shift $((OPTIND-1))
+
+[ $do_exit -eq 1 ] && exit 0
 
 # Root folder for your music files on your phone
 MUSIC_FOLDER="%INSERT PATH HERE%"
