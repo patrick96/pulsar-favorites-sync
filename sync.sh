@@ -84,7 +84,7 @@ echo "Exporting pulsar favorites to $exported"
 # Finally remove leading slashes from the paths, if $MUSIC_FOLDER doesn't end with a slash
 sqlite3 player.db 'select data from favorites;' | sed "s|^$MUSIC_FOLDER||" | sed 's/^\///' > "$exported"
 
-cd ../../../ || exit 1
+cd - || exit 1
 
 # Append local favorites to the exported ones
 cat "$FAVORITES" >> "$exported"
@@ -122,7 +122,7 @@ sqlite3 player.db 'DELETE FROM favorites' || exit 1
 
 sqlite3 -batch player.db < "$restore" || exit 1
 
-cd ../../../ || exit 1
+cd - || exit 1
 
 # Create tar archive of the modified app data
 tar --create --file apps.tar apps || exit 1
