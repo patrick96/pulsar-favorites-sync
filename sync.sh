@@ -52,7 +52,7 @@ while getopts ":hve:r:f:" opt; do
             ;;
         f)
             f_flag=1
-            FAVORITES="$OPTARG"
+            FAVORITES="$(realpath "$OPTARG")"
             ;;
         ?)
             echo "Invalid option: -$OPTARG" >&2
@@ -99,7 +99,7 @@ if ! [ -f "$FAVORITES" ]; then
 fi
 
 echo -e "Music folder on phone:\n\t$MUSIC_FOLDER"
-echo -e "Local playlist:\n\t$(realpath "$FAVORITES")"
+echo -e "Local playlist:\n\t$FAVORITES"
 
 wd="$(mktemp -d)"
 
