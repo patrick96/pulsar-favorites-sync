@@ -19,6 +19,12 @@ should be the same on your phone and computer
 
 # Usage
 
+**Warning:** I have noticed that after the restore the favorites playlist in pulsar may be empty. If you encounter this, 
+you may be unable to sync your playlist to the phone, only from it. To restore the original favorites playlist before it 
+was wiped, look for the line `Starting syncing process in /tmp/tmp.XXXXXXXXX` in the output of `sync.sh` when you ran it 
+before. That folder in `/tmp` contains a file `backup.ab`, run `adb restore backup.ab` to restore the original favorites 
+list in pulsar.
+
 First make sure you meet all the requirements described above, if you don't, things could go wrong.
 
 Now clone this repository with its submodules:
