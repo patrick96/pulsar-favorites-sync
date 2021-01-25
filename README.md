@@ -2,6 +2,8 @@
 
 ![GPL v3.0](https://img.shields.io/github/license/patrick96/notification-mount.svg)
 
+**THIS SCRIPT NO LONGER WORKS FOR ME, USE AT YOUR OWN RISK!**
+
 This script helps you synchronize your list of favorites in the [Pulsar Music Player][pulsar] with a local playlist on
 your computer.
 
